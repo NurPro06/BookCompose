@@ -1,9 +1,8 @@
 package kg.geeks.bookcompose.ui.activity
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,10 +17,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             var selectedBook by remember { mutableStateOf<Novel?>(null) }
 
-            if (selectedBook == null) {
+            AnimatedVisibility(visible = selectedBook == null) {
                 BookList { book -> selectedBook = book }
-            } else {
-                BookDetails(novel = selectedBook!!) { selectedBook = null }
+            }
+
+            AnimatedVisibility(visible = selectedBook != null) {
+                selectedBook?.let { book ->
+                    BookDetails(novel = book) { selectedBook = null }
+                }
             }
         }
     }
